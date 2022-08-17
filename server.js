@@ -35,6 +35,7 @@ io.on('connection', (socket) => {
     });
     */
    console.log('Some one joined socketId: ' + socket.id);
+   socket.emit('yourID', socket.id);
    socket.on('user-joined-room', ({ userName, roomId }) => {
       const currentUser = socket.id;
       if (usersInRoom[roomId]) {
@@ -101,19 +102,31 @@ io.on('connection', (socket) => {
       if (currentMessagesInRoom) {
          currentMessagesInRoom = [
             ...currentMessagesInRoom,
-            { message, userName: currentUser },
+            { message, userName: currentUser.userName },
          ];
          messagesInRoom[roomId] = currentMessagesInRoom;
       }
 
       if (currentUsersInRoom) {
+         /** broadcast will send for all connected clients except the sender */
+         // socket.broadcast.emit('sendMessageToClient', {
+         //     message,
+         //     userName: currentUser.userName,
+         // });
          currentUsersInRoom.forEach((user) => {
             io.to(user.userId).emit('sendMessageToClient', {
                message,
-               userName: currentUser,
+               userName: currentUser.userName,
             });
          });
       }
+   });
+
+   socket.on('sendingSignal', ({ userIdToSendSignal, callerId, signal }) => {
+      io.to(userIdToSendSignal.userId).emit('userJoined', {
+         signal,
+         callerId,
+      });
    });
 });
 

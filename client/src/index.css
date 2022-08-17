@@ -54,3 +54,23 @@
 }
 
 
+.videoCall-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+video {
+  object-fit: fill;
+  width: 300px;
+  height: 220px;
+  padding: 2px;
+}
+
+.videos__users {
+  height: calc(100% - 67px);
+  flex-grow: 1;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
